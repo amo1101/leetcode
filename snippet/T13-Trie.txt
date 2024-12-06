@@ -1,0 +1,69 @@
+class TrieNode {
+public:
+    unordered_map<char, TrieNode*> children;  // can be replaced by TrieNode* children[26], more time effectively, but cost more space
+    bool isWord;
+public:
+    TrieNode() : isWord(false) {}
+    ~TrieNode() {
+        for (auto child : children) {
+            delete child.second;
+        }
+    }
+};
+
+class Trie {
+private:
+    TrieNode* root;
+public:
+    Trie() {
+        root = new TrieNode();
+    }
+    
+    void insert(string word) {
+        TrieNode* curr = root;
+        for (auto c : word) {
+            auto it = curr->children.find(c);
+            if (it == curr->children.end()) {
+                curr->children[c] = new TrieNode();
+                curr = curr->children[c];
+            } else {
+                curr = it->second;
+            }
+        }
+        curr->isWord = true;
+    }
+    
+    bool search(string word) {
+        TrieNode* curr = root;
+        for (auto c : word) {
+            auto it = curr->children.find(c);
+            if (it == curr->children.end()) {
+                return false;
+            } else {
+                curr = it->second;
+            }
+        }
+        return curr->isWord;
+    }
+    
+    bool startsWith(string prefix) {
+        TrieNode* curr = root;
+        for (auto c : prefix) {
+            auto it = curr->children.find(c);
+            if (it == curr->children.end()) {
+                return false;
+            } else {
+                curr = it->second;
+            }
+        }
+        return true;
+    }
+};
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie* obj = new Trie();
+ * obj->insert(word);
+ * bool param_2 = obj->search(word);
+ * bool param_3 = obj->startsWith(prefix);
+ */

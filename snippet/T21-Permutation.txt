@@ -1,0 +1,23 @@
+void backtrack(vector<int>& arr, int first, int K, vector<vector<int>>& result) {
+    if (first == K) {
+        result.emplace_back(arr);
+        return;
+    }
+    for (int i = first; i < arr.size(); ++i) {
+        swap(arr[i], arr[first]);
+        backtrack(arr, first + 1, K, result);
+        swap(arr[i], arr[first]);
+    }
+}
+
+void permutation(vector<int>& arr, int K) {
+    vector<vector<int>> result;
+    backtrack(arr, 0, K, result);
+    for (auto p : result) {
+        for (auto i : p) {
+            printf("%d,", i);
+        }
+        printf("\n");
+    }
+}
+

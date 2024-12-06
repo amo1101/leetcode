@@ -1,0 +1,18 @@
+static int countLessEqual(vector<vector<int>> &matrix, int mid, pair<int, int> &smallLargePair) {
+    int count = 0;
+    int n = matrix.size(), row = n - 1, col = 0;
+    while (row >= 0 && col < n) {
+      if (matrix[row][col] > mid) {
+        // as matrix[row][col] is bigger than the mid, let's keep track of the
+        // smallest number greater than the mid
+        smallLargePair.second = min(smallLargePair.second, matrix[row][col]);
+        row--;
+      } else {
+        // as matrix[row][col] is less than or equal to the mid, let's keep track of the
+        // biggest number less than or equal to the mid
+        smallLargePair.first = max(smallLargePair.first, matrix[row][col]);
+        count += row + 1;
+        col++;
+      }
+    }
+}

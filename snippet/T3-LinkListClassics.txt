@@ -1,0 +1,74 @@
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        if (head == NULL) {
+            return head;
+        }
+        ListNode* currentHead = head;
+        while (head->next) {
+            ListNode* p = head->next;
+            head->next = p->next;
+            p->next = currentHead;
+            currentHead = p;
+        }
+        return currentHead;
+    }
+};
+
+
+class Solution {
+public:
+    ListNode* rotateRight(ListNode* head, int k) {
+        if (head == NULL || head->next == NULL) {
+            return head;
+        }
+        
+		// connect tail to head
+        ListNode *oldTail = head, *newTail = head, *newHead;
+        int len = 1;
+        while (oldTail->next) {
+            len++;
+            oldTail = oldTail->next;
+        }
+        oldTail->next = head;
+		
+		// find the new head
+        int n = len - k % len - 1;
+        while (n && newTail) {
+            newTail = newTail->next;
+            n--;
+        }
+        newHead = newTail->next;
+        newTail->next = NULL;
+        return newHead;
+    }
+};
+
+// palindrom list recursively Check
+class Solution {
+
+    private ListNode frontPointer;
+
+    private boolean recursivelyCheck(ListNode currentNode) {
+        if (currentNode != null) {
+            if (!recursivelyCheck(currentNode.next)) return false;
+            if (currentNode.val != frontPointer.val) return false;
+            frontPointer = frontPointer.next;
+        }
+        return true;
+    }
+
+    public boolean isPalindrome(ListNode head) {
+        frontPointer = head;
+        return recursivelyCheck(head);
+    }
+}

@@ -1,0 +1,161 @@
+Recursive Solution:
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+private:
+    void preorderTraversal(TreeNode* root, vector<int>& answer) {
+        if (!root) {
+            return;
+        }
+        answer.push_back(root->val);               // visit the root
+        preorderTraversal(root->left, answer);     // traverse left subtree
+        preorderTraversal(root->right, answer);    // traverse right subtree
+    }
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> answer;
+        preorderTraversal(root, answer);
+        return answer;
+    }
+};
+
+class Solution {
+private:
+    void inorderTraversal(TreeNode* root, vector<int>& answer) {
+        if (!root) {
+            return;
+        }
+        inorderTraversal(root->left, answer);     // traverse left subtree
+        answer.push_back(root->val);              // visit the root
+        inorderTraversal(root->right, answer);    // traverse right subtree
+    }
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> answer;
+        inorderTraversal(root, answer);
+        return answer;   
+    }
+};
+
+class Solution {
+private:
+    void postorderTraversal(TreeNode* root, vector<int>& answer) {
+        if (!root) {
+            return;
+        }
+        postorderTraversal(root->left, answer);     // traverse left subtree
+        postorderTraversal(root->right, answer);    // traverse right subtree
+        answer.push_back(root->val);                // visit the root
+    }
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> answer;
+        postorderTraversal(root, answer);
+        return answer;   
+    }
+};
+
+Iterative Solution:
+
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> answer;
+        stack<TreeNode*> s;
+        if (root) {
+            s.push(root);
+        }
+        TreeNode* cur;
+        while (!s.empty()) {
+            cur = s.top();
+            s.pop();
+            answer.push_back(cur->val);     // visit the root
+            if (cur->right) {
+                s.push(cur->right);         // push right child to stack if it is not null
+            }
+            if (cur->left) {
+                s.push(cur->left);          // push left child to stack if it is not null
+            }
+        }
+        return answer;
+    }
+	
+	void inorderIterative(TreeNode* root, vector<int>& vals) {
+        stack<TreeNode*> sk;
+        TreeNode* cur = root;
+        while (cur || !sk.empty()) {
+            if (cur) {
+                sk.push(cur);
+                cur = cur->left;
+            } else {
+                cur = sk.top();
+                sk.pop();
+                vals.push_back(cur->val);
+                cur = cur->right;
+            }
+        }
+    }
+	
+	void postorderIterative(TreeNode* root, vector<int>& vals) {
+        stack<TreeNode*> sk;
+        TreeNode* cur = root;
+        while(cur || !sk.empty()){
+            if(cur){
+                sk.push(cur);
+                cur = cur->left;
+            } else {
+                TreeNode* temp = sk.top()->right;
+                if (temp == NULL) {
+                    temp = sk.top();
+                    sk.pop();
+                    vals.push_back(temp->val);
+                    while(!sk.empty() && temp == sk.top()->right){
+                        temp = sk.top();
+						sk.pop();
+                        vals.push_back(temp->val);
+                    }
+                } else {
+                    cur = temp;
+                }
+            }
+        }
+    }
+};
+
+Level order traversal:
+
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> ans;
+        queue<TreeNode*> q;
+        if (root) {
+            q.push(root);
+        }
+        TreeNode* cur;
+        while (!q.empty()) {
+            int size = q.size();
+            ans.push_back(vector<int>());
+            for (int i = 0; i < size; ++i) {		// traverse nodes in the same level
+                cur = q.front();
+                q.pop();
+                ans.back().push_back(cur->val);		// visit the root
+                if (cur->left) {
+                    q.push(cur->left);				// push left child to queue if it is not null
+                }
+                if (cur->right) {
+                    q.push(cur->right);				// push right child to queue if it is not null
+                }
+            }
+        }
+        return ans;
+    }
+};

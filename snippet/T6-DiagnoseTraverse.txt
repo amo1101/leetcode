@@ -1,0 +1,84 @@
+int* findDiagonalOrder(int** mat, int matSize, int* matColSize, int* returnSize){
+    int* ret = malloc(matSize * (*matColSize) * sizeof(int));
+    int i = 0, j = 0;
+    ret[0] = mat[0][0];
+    int k = 1;
+    
+    while (1) {
+        // downward
+        if (j + 1 <= *matColSize - 1) {
+            ret[k++] = mat[i][++j];
+        } else if (i + 1 <= matSize - 1) {
+            ret[k++] = mat[++i][j];
+        } else {
+            break;
+        }
+        
+        while (i + 1 <= matSize - 1 && j - 1 >= 0) {
+            ret[k++] = mat[++i][--j];
+        }
+    
+        // upward
+        if (i + 1 <= matSize - 1) {
+            ret[k++] = mat[++i][j];
+        } else if (j + 1 <= *matColSize - 1) {
+            ret[k++] = mat[i][++j];
+        } else {
+            break;
+        }
+        
+        while (i - 1 >= 0 && j + 1 <= *matColSize - 1) {
+            ret[k++] = mat[--i][++j];
+        }
+    }
+    
+    *returnSize = k;
+    return ret;
+}
+
+// Spiral traverse
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> ret;
+        int M = matrix.size();
+        int N = matrix[0].size();
+        int left = 0;
+        int right = N - 1;
+        int up = 0;
+        int down = M - 1;
+        
+        while (ret.size() < M * N) {
+            // left -> right
+            for (int c = left; c <= right; ++c) {
+                ret.push_back(matrix[up][c]);
+            }
+            
+            // downwards
+            for (int r = up + 1; r <= down; ++r) {
+                ret.push_back(matrix[r][right]);
+            }
+            
+            // right->left
+            if (up != down) {
+                for (int c = right - 1; c >= left; --c) {
+                    ret.push_back(matrix[down][c]);
+                }
+            }
+            
+            // upwards
+            if (left != right) {
+                for (int r = down - 1; r > up; --r) {
+                    ret.push_back(matrix[r][left]);
+                }
+            }
+            
+            left++;
+            right--;
+            up++;
+            down--;
+        }
+        
+        return ret;
+    }
+};

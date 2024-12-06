@@ -1,0 +1,112 @@
+// Dijkstra's algorithm
+// No.743. Network Delay Time
+class Solution {
+public:
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        vector<vector<pair<int, int>>> adjacency_list(n + 1);
+        priority_queue<pair<int, int>, vector<pair<int, int>>,
+            greater<pair<int, int>>> minPQ;
+        vector<int> costTime(n + 1, INT_MAX); 
+            
+        for (int i = 0; i < times.size(); ++i) {
+            int src = times[i][0];
+            int dest = times[i][1];
+            int time = times[i][2];
+            adjacency_list[src].push_back({time, dest});
+        }
+        
+        // dijkstra's algorithm
+        costTime[k] = 0;
+        minPQ.push({0, k});
+        while (!minPQ.empty()) {
+            auto [currTime, currNode] = minPQ.top();
+            minPQ.pop();
+            if (currTime > costTime[currNode]) {
+                continue;
+            }
+            for (auto next : adjacency_list[currNode]) {
+                int time = next.first;
+                int nextNode = next.second;
+                if (costTime[nextNode] > currTime + time) {
+                    costTime[nextNode] = currTime + time;
+                    minPQ.push({costTime[nextNode], nextNode});
+                }
+            }
+        }
+        
+        int answer = INT_MIN;
+        for (int i = 1; i < n + 1; ++i) {
+            answer = max(answer, costTime[i]);
+        }
+        return answer == INT_MAX ? -1 : answer;
+    }
+};
+
+// No.787. Cheapest Flights Within K Stops
+// Bellman-Ford algorithm
+class Solution {
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+        vector<vector<int>> prices(2, vector<int>(n, INT_MAX));
+        int curr = 0, next = 1;
+        prices[curr][src] = 0;
+        
+        for (int i = 0; i <= k; ++i) {
+            for (auto& f : flights) {
+                int from = f[0];
+                int to = f[1];
+                int cost = f[2];
+                if (prices[curr][from] != INT_MAX && 
+                    prices[curr][from] + cost < prices[next][to]) {
+                    prices[next][to] = prices[curr][from] + cost;
+                }
+            }
+            swap(curr, next);
+            prices[curr][src] = 0;
+        }
+        return prices[curr][dst] == INT_MAX ? -1 : prices[curr][dst];
+    }
+};
+
+// No.1631. Path With Minimum Effort
+// SPFA
+class Solution {
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+        int m = heights.size();
+        int n = heights[0].size();
+        
+        vector<vector<int>> cost(m,vector<int>(n,INT_MAX));
+        cost[0][0] = 0;
+        vector<vector<int>> seen(m,vector<int>(n,0));
+        seen[0][0] = 1;
+        
+        queue<pair<int,int>> q;
+        q.push({0,0});
+        
+        int dirs[4][2] = {{-1,0},{1,0},{0,-1},{0,1}};
+        
+        while(!q.empty()){
+            auto p = q.front();
+            q.pop();
+            int x = p.first, y = p.second;
+            seen[x][y] = 0;
+            for(auto d : dirs){
+                int i = x + d[0];
+                int j = y + d[1];
+                if( i < 0 || i >=m || j < 0 || j>=n || cost[i][j] <= max(cost[x][y], abs(heights[i][j] - heights[x][y])))
+                    continue;
+                if (!seen[i][j]) {
+                    q.push({i,j});
+                    seen[i][j] = 1;
+                }
+                
+                cost[i][j] = max(cost[x][y], abs(heights[i][j] - heights[x][y]));
+            }
+        }
+        
+        return cost.back().back();
+    }
+};
+
+

@@ -1,0 +1,35 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        ListNode* r1 = head, *r2 = head;
+        ListNode* p1 = head, *p2 = NULL;
+		
+		// get the 1st intersection node in the circle
+        while (r1 && r2 && r2->next) {
+            r1 = r1->next;
+            r2 = r2->next->next;
+            if (r1 == r2) {
+                p2 = r1;
+                break;
+            }
+        }
+        if (p2 == NULL) {
+            return NULL;
+        }
+        
+		// get the 2nd intersection node which is exactly the entry node
+        while (p1 != p2) {
+            p1 = p1->next;
+            p2 = p2->next;
+        }
+        return p1;
+    }
+};
